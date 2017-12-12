@@ -52,12 +52,12 @@
 
         <header class="main-header">
             <!-- Logo -->
-            <a href="../../index2.html" class="logo">
+            <a href="#" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <!--<img class="logo-mini" src="{adminlte}dist/img/BHP Logo.png"/>-->
                 <span class="logo-mini"><b>B</b>HP</span>
                 <!-- logo for regular state and mobile devices -->
-                <img src="{adminlte}dist/img/editbhp.png"/>
+                <img src="http://baryon-hp.com//aset/images/BHP.png"/>
             </a>
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top" role="navigation">

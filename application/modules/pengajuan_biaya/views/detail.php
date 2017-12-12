@@ -8,8 +8,8 @@
     <div class="tab-content">
       <div id="menu1" class="tab-pane fade in active">
         <h4>
-          <span>Summary</span>
           <button class="btn btn-xs btn-default pull-right" type="button" onclick="printSummary(this);" data-id="<?php echo $data['id_pengajuan'];?>" ><i class="fa fa-print"></i></button>
+          <img src="http://baryon-hp.com//aset/images/BHP.png" align="right" alt="Mountain">
         </h4>
         <div class="col-xs-4">
         </div>
