@@ -1,0 +1,48 @@
+login
+
+akses:user
+
+user : user
+
+pass : user
+
+
+==========
+akses : maker
+
+user : masker
+
+pass : admin
+
+
+==========
+akses : checker
+
+user : checker
+
+pass : admin
+
+
+============
+akses : signer1
+
+user : signer1
+
+pass : admin 
+
+
+===========
+akses : signer2
+
+user : signer2
+
+pass : admin
+
+
+==========
+akses : admin
+
+user : admin
+
+pass : admin
+
