@@ -2,8 +2,8 @@
 
 /*
 |--------------------------------------------------------------------------
-| DEVELOPER 	: IYAN ISYANTO
-| EMAIL			: POSDARING@GMAIL.COM
+| DEVELOPER     : FIKRI ADITIA
+| EMAIL         : FIKRIADITIA.ADITIA9@GMAIL.COM
 |--------------------------------------------------------------------------
 |
 */

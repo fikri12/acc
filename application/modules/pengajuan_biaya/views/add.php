@@ -3,6 +3,8 @@
 	<div class="box">
 		<div class="box-header with-border">
 			<h3 class="box-title">{title}</h3>
+			<br>
+			*Jika biaya entertain, wajib diisi dengan pihak siapa serta perkiraan manfaat manfaat yang akan diperoleh perusahaan
 		</div>
 		<div class="box-body">
 			<input type="hidden" name="id" value="{id}">

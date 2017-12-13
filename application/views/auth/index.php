@@ -15,7 +15,7 @@
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
-            <img src="http://baryon-hp.com//aset/images/BHP.png"/></div>
+            <img src="{adminlte}dist/img/editbhp.png"/></div>
         <?php if($this->session->flashdata('error_login')): ?>
             <?= $this->session->flashdata('error_login') ?>
         <?php endif ?>

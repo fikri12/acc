@@ -2,8 +2,8 @@
 
 /*
 |--------------------------------------------------------------------------
-| DEVELOPER 	: IYAN ISYANTO
-| EMAIL			: POSDARING@GMAIL.COM
+| DEVELOPER 	: FIKRI ADITIA
+| EMAIL			: FIKRIADITIA.ADITIA9@GMAIL.COM
 |--------------------------------------------------------------------------
 |
 */
@@ -11,7 +11,7 @@
 class Piutang_model extends CI_Model {
 
 	public function save() {
-		$this->db->set('no', get_kode('U'.date('ymd'),'no','tpiutang',3));
+		$this->db->set('no', get_kode('P'.date('ymd'),'no','tpiutang',3));
 		$this->db->set('tanggal', $this->input->post('tanggal'));
 		$this->db->set('proyek', $this->input->post('proyek'));
 		$this->db->set('progres', $this->input->post('progres'));

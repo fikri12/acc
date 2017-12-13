@@ -2,8 +2,8 @@
 
 /*
 |--------------------------------------------------------------------------
-| DEVELOPER 	: IYAN ISYANTO
-| EMAIL			: POSDARING@GMAIL.COM
+| DEVELOPER 	: FIKRI ADITIA
+| EMAIL			: FIKRIADITIA.ADITIA9@GMAIL.COM
 |--------------------------------------------------------------------------
 |
 */
@@ -11,7 +11,7 @@
 class Cashflow_model extends CI_Model {
 
 	public function save() {
-		$this->db->set('no', get_kode('CF'.date('ymd'),'no','tcashflow',3));
+		$this->db->set('no', get_kode('BHP'.date('ymd'),'no','tcashflow',3));
 		$this->db->set('tanggal', $this->input->post('tanggal'));
 		$this->db->set('debet', remove_comma($this->input->post('debet')));
 		$this->db->set('kredit', remove_comma($this->input->post('kredit')));

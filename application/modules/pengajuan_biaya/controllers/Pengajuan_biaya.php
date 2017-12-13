@@ -2,7 +2,8 @@
 
 /*
 |--------------------------------------------------------------------------
-|
+| DEVELOPER 	: FIKRI ADITIA
+| EMAIL			: FIKRIADITIA.ADITIA9@GMAIL.COM
 |--------------------------------------------------------------------------
 |
 */
@@ -79,7 +80,7 @@ class Pengajuan_biaya extends Admin {
 
   public function save(){
 		//$this->form_validation->set_rules('no', '', 'trim|required');
-		$this->form_validation->set_rules('perihal', '', 'trim|required');
+		//$this->form_validation->set_rules('perihal', '', 'trim|required');
 		$this->form_validation->set_rules('lampiran', '', 'trim|required');
 		$this->form_validation->set_rules('tanggal', '', 'trim|required');
 		$this->form_validation->set_rules('pelaksana', '', 'trim|required');
@@ -110,13 +111,23 @@ class Pengajuan_biaya extends Admin {
 					 if($insert_id > 0){
 						 $data_log = array(
 							 'id_pengajuan' 	=> $insert_id,
-							 'from_position' 	=> 0,
-							 'to_position' 		=> 0,
+							 'from_position' 	=> intval($this->session->userdata('akses')),
+							 'to_position' 		=> intval($this->session->userdata('akses')) + 1,
 							 'action' 				=> 0,
 							 'comment' 				=> 'Pengajuan Biaya dibuat',
 							 'add_by' 				=> $this->session->userdata('userid'),
 						 );
 						 $this->db->insert('xpengajuan_log',$data_log);
+
+						 /* START NOTIF */
+						 $list_user = $this->db->get_where('xuser',array('akses' => intval($this->session->userdata('akses')) + 1))->result_array();
+						 $judul = 'Pengajuan Biaya Baru';
+						 $isi 	= 'Pemohon '.$this->session->userdata('nama').' mengajukan biaya';
+						 foreach ($list_user as $value) {
+							 	# code...
+								$this->fungsi->insert_notif($insert_id,$value['id'],intval($this->session->userdata('akses')) + 1,$judul,$isi);
+						 }
+						 /* END NOTIF */
 						 $this->session->set_flashdata('confirm',true);
 						 $this->session->set_flashdata('message_flash','{savesuccesmsg}');
 						 redirect('pengajuan_biaya','location');
@@ -124,7 +135,9 @@ class Pengajuan_biaya extends Admin {
 
 			}
 		} else {
-				$this->failed_save($this->input->post('id'));
+			$this->session->set_flashdata('error',true);
+			$this->session->set_flashdata('message_flash','Cannot save data, some field are required');
+			redirect('pengajuan_biaya/create','location');
 		}
   }
 
@@ -192,13 +205,30 @@ class Pengajuan_biaya extends Admin {
 
 		$data_log = array(
 			'id_pengajuan' 	=> $id,
-			'from_position' => $old_position,
+			'from_position' => $this->session->userdata('akses'),//$old_position,
 			'to_position'		=> $new_position,
 			'action' 				=> $new_action,
 			'comment' 			=> $new_comment,
 			'add_by' 				=> $this->session->userdata('userid'),
 		);
 		$this->db->insert('xpengajuan_log',$data_log);
+
+		/* START UPDATE NOTIF */
+		$this->db->where('id_pengajuan',$id);
+		$this->db->where('akses',$this->session->userdata('akses'));
+		$this->db->update('xnotif',array('action' => '1'));
+		/* END UPDATE NOTIF */
+
+		/* START NOTIF */
+		$list_user = $this->db->get_where('xuser',array('akses' => intval($this->session->userdata('akses')) + 1))->result_array();
+		$judul = 'Pengajuan Biaya Baru';
+		$isi 	= 'Permohonan konfirmasi pengajuan biaya';
+		foreach ($list_user as $value) {
+			 # code...
+			 $this->fungsi->insert_notif($id,$value['id'],intval($this->session->userdata('akses')) + 1,$judul,$isi);
+		}
+		/* END NOTIF */
+
 		$return = array('code' => '1','msg' => 'OK');
 		echo json_encode($return);
 	}
@@ -213,6 +243,90 @@ class Pengajuan_biaya extends Admin {
 						 ->join('xuser d','a.add_by = d.id')
 						 ->where(array('a.id_pengajuan' => $id));
 		$page_data['logs'] = $this->db->get()->result_array();
+
+
+		$pemohon = '';
+		$maker   = '';
+		$checker   = '';
+		$signer   = '';
+
+		$r = $this->db->query("SELECT * FROM `xpengajuan_log` WHERE `id_pengajuan` = $id ORDER BY `id` DESC ")->result();
+
+		foreach($r as $res){
+			if($res->from_position == "0"){
+				$pemohon = $res->add_by;
+			}elseif($res->from_position == "3" && $res->action == "1"){
+				$maker = $res->add_by;
+			}elseif($res->from_position == "4" && $res->action == "1"){
+				$checker = $res->add_by;
+			}elseif($res->from_position == "5" && $res->action == "1"){
+				$signer = $res->add_by;
+			}elseif($res->from_position == "6" && $res->action == "1"){
+				$signer = $res->add_by;
+			}
+		}
+
+		$image_pemohon = '';
+		$image_maker   = '';
+		$image_checker   = '';
+		$image_signer   = '';
+
+		$nama_pemohon = '';
+		$nama_maker   = '';
+		$nama_checker   = '';
+		$nama_signer   = '';
+		$in_where = ($pemohon == "")? "2" : $pemohon ;
+
+		if($maker != ""){
+			$in_where  =  $in_where.",".$maker;
+		}
+
+		if($checker != ""){
+			$in_where  =  $in_where.",".$checker;
+		}
+
+		if($signer != ""){
+			$in_where  =  $in_where.",".$signer;
+		}
+
+		$row = $this->db->query("select * from xuser where id in ($in_where)")->result();
+
+		$i=0;
+		foreach ($row as $r) {
+			if($i == 0){
+				$image_pemohon = $row[$i]->foto_ttd;
+				$nama_pemohon = $row[$i]->nama;
+				$i++;
+			}elseif($i == 1){
+				$image_maker = $row[$i]->foto_ttd;
+				$nama_maker = $row[$i]->nama;
+				$i++;
+			}elseif($i == 2){
+				$image_checker = $row[$i]->foto_ttd;
+				$nama_checker = $row[$i]->nama;
+				$i++;
+			}elseif($i == 3){
+				$image_signer = $row[$i]->foto_ttd;
+				$nama_signer = $row[$i]->nama;
+				$i++;
+			}
+		}
+
+		$ttd = array(
+				"image_pemohon"=>$image_pemohon,
+				"nama_pemohon"=>$nama_pemohon,
+				"image_maker"=>$image_maker,
+				"nama_maker"=>$nama_maker,
+				"image_checker"=>$image_checker,
+				"nama_checker"=>$nama_checker,
+				"image_signer"=>$image_signer,
+				"nama_signer"=>$nama_signer,
+
+		);
+
+
+
+		$page_data["ttd"] =  $ttd;
 		$this->load->view('detail',$page_data);
 	}
 

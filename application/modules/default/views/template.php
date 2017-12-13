@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="{adminlte}plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
     <link rel="stylesheet" href="{adminlte}plugins/datatables/dataTables.bootstrap.css">
     <link rel="stylesheet" href="{adminlte}plugins/select2/select2.min.css">
+    <link rel="stylesheet" href="{adminlte}plugins/jquery-toastr/jquery.toast.min.css">
     <!--[if lt IE 9]>
 	  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 	  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -44,6 +45,7 @@
     <script src="{adminlte}plugins/slimScroll/jquery.slimscroll.min.js"></script>
     <script src="{adminlte}plugins/select2/select2.full.min.js"></script>
     <script src="{adminlte}plugins/fastclick/fastclick.min.js"></script>
+    <script src="{adminlte}plugins/jquery-toastr/jquery.toast.min.js"></script>
     <script src="{adminlte}dist/js/app.min.js"></script>
 </head>
 
@@ -52,12 +54,12 @@
 
         <header class="main-header">
             <!-- Logo -->
-            <a href="#" class="logo">
+            <a href="../../index2.html" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <!--<img class="logo-mini" src="{adminlte}dist/img/BHP Logo.png"/>-->
                 <span class="logo-mini"><b>B</b>HP</span>
                 <!-- logo for regular state and mobile devices -->
-                <img src="http://baryon-hp.com//aset/images/BHP.png"/>
+                <img src="{adminlte}dist/img/editbhp.png"/>
             </a>
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top" role="navigation">
@@ -135,6 +137,13 @@
                                     <?= $this->session->flashdata('message_flash') ?>
                                 </div>
                               <?php endif ?>
+
+                              <?php if($this->session->flashdata('error')): ?>
+                                  <div class="alert alert-danger alert-dismissible">
+                                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                      <?= $this->session->flashdata('message_flash') ?>
+                                  </div>
+                                <?php endif ?>
                         </div>
                     </div>
 
@@ -151,7 +160,6 @@
             <div class="control-sidebar-bg"></div>
     </div>
 
-
 <script type="text/javascript">
     function number(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -166,6 +174,121 @@
             .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         });
     });
+
+     setInterval(getNotif,20000);
+
+    function getNotif(){
+      $.ajax({
+        url  : '<?php echo site_url().'dashboard/get_notif/'; ?>',
+        method : 'get',
+        dataType : 'json',
+        success: function(data){
+
+          if(data.code == '1'){
+            if(parseInt(data.total) > 0){
+              var json_notif = data.notif;
+              for(var i = 0;i < json_notif.length;i++){
+                showNotif(json_notif[i].id,json_notif[i].judul_notif,json_notif[i].isi_notif,'info',json_notif[i].action);
+
+              }
+
+            }
+          }
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+
+        }
+      });
+    }
+
+    function showNotif(id,title,msg,type,action = 1){
+      $.toast({
+          heading: title,
+          text: msg,
+          position: 'bottom-right',
+          icon: type,
+          hideAfter: false,
+          stack: true,
+          afterHidden: function () {
+            updateNotif(id);
+            if('<?php echo $this->session->userdata('akses');?>' != '2' && action == 0){
+              showConfirmToast(id);
+            }
+          }
+      });
+    }
+
+    function showConfirmToast(id){
+
+      $.toast({
+          heading: 'What do you wanna do ?',
+          text: '<a href="javascript:void(0)" onclick="do_confirm(\''+id+'\',\'reject\');">Approve</a> or <a href="javascript:void(0);" onclick="do_confirm(\''+id+'\',\'reject\');">Reject</a> ?',
+          position: 'bottom-right',
+          icon: 'warning',
+          hideAfter: false,
+          stack: true,
+          afterShown: function(){
+
+          },
+          afterHidden: function () {
+
+          }
+      });
+    }
+
+    function updateNotif(id){
+      $.ajax({
+        url  : '<?php echo site_url().'dashboard/read_notif/'; ?>',
+        method : 'post',
+        data: {
+          id : id
+        },
+        dataType : 'json',
+        success: function(data){
+          if(data.code == '1'){
+
+          }
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+
+        }
+      });
+    }
+
+    function do_confirm(id,type){
+      $.toast().reset('all');
+      $.ajax({
+        url : '<?php echo site_url().'dashboard/do_confirm/';?>',
+        data:{
+          id   : id,
+          type : type
+        },
+        method: 'post',
+        dataType: 'json',
+        success: function(data){
+          if(data){
+            showToast('Information',data.msg,'success');
+          }
+        },
+        error: function(data){
+          showToast('Information','Error','error');
+        }
+      }).done( function(){
+
+      });
+
+    }
+
+    function showToast(title,msg,type){
+      $.toast({
+          heading: title,
+          text: msg,
+          position: 'bottom-right',
+          icon: type,
+          stack: true,
+      });
+    }
+
 </script>
 </body>
 </html>

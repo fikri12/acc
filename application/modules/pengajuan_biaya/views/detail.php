@@ -8,8 +8,8 @@
     <div class="tab-content">
       <div id="menu1" class="tab-pane fade in active">
         <h4>
-          <button class="btn btn-xs btn-default pull-right" type="button" onclick="printSummary(this);" data-id="<?php echo $data['id_pengajuan'];?>" ><i class="fa fa-print"></i></button>
-          <img src="http://baryon-hp.com//aset/images/BHP.png" align="right" alt="Mountain">
+          <span>Summary</span>
+          <!--<button class="btn btn-xs btn-default pull-right" type="button" onclick="printSummary(this);" data-id="<?php echo $data['id_pengajuan'];?>" ><i class="fa fa-print"></i></button>-->
         </h4>
         <div class="col-xs-4">
         </div>
@@ -77,8 +77,9 @@
               <tr>
                 <td>
                   <p>&nbsp; Pemohon, </p>
-                  <br><br><br>
-                  <p>&nbsp;(<span style="color:#ffffff;">nsmapemohon </span>)</p>
+
+                <img width="100" height="60" src="<?php echo base_url();?>uploads/users/ttd/<?= $ttd['image_pemohon'] ?>" />
+                  <p>&nbsp; <span ><?= $ttd['nama_pemohon'] ?> </span></p>
                 </td>
                 <td align="right">
                   <table class="table table-bordered">
@@ -91,9 +92,24 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <td style="height: 105px;"></td>
-                        <td style="height: 105px;"></td>
-                        <td style="height: 105px;"></td>
+                        <td style="height: 105px;text-align:center;vertical-align:bottom">
+                          <?php if(!empty($ttd['image_maker'])){ ?>
+                            <img width="100" height="60" src="<?php echo base_url();?>uploads/users/ttd/<?= $ttd['image_maker'] ?>" />
+                          <?php } ?>
+                          <p><?= $ttd['nama_maker'] ?></p>
+                        </td>
+                        <td style="height: 105px;text-align:center;vertical-align:bottom">
+                          <?php if(!empty($ttd['image_checker'])){ ?>
+                            <img width="100" height="60" src="<?php echo base_url();?>uploads/users/ttd/<?= $ttd['image_checker'] ?>" />
+                          <?php } ?>
+                          <p><?= $ttd['nama_checker'] ?></p>
+                        </td>
+                        <td style="height: 105px;text-align:center;vertical-align:bottom">
+                          <?php if(!empty($ttd['image_signer'])){ ?>
+                            <img width="100" height="60" src="<?php echo base_url();?>uploads/users/ttd/<?= $ttd['image_signer'] ?>" />
+                          <?php } ?>
+                          <p><?= $ttd['nama_signer'] ?></p>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -128,8 +144,8 @@
               <tr>
                 <td><?php echo $no++ ;?></td>
                 <td><?php echo date_format(date_create($log['date_add']),'d/m/Y') ;?></td>
-                <td><?php echo $log['nama_to'] ;?></td>
                 <td><?php echo $log['nama_from'] ;?></td>
+                <td><?php echo $log['nama_to'] ;?></td>
                 <td>
                     <?php
                           $action_arr = array('Pending','Approve','Reject');
